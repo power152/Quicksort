@@ -1,0 +1,141 @@
+import java.util.Arrays;
+import java.util.Random;
+
+public class TestSort1 {
+
+    //Hoare法
+    public static void swap(int[] array,int i,int j) {
+        int tmp=array[i];
+        array[i]=array[j];
+        array[j]=tmp;
+    }
+    public static int parentition2(int[] array,int start,int end) {
+        int begin=start;
+        int last=end;
+        int tmp=array[start];
+        while (begin<last) {
+            while (begin<last && array[last]>=tmp) {
+                last--;
+            }
+            while (begin<last && array[begin]<=tmp) {
+                begin++;
+            }
+            swap(array,begin,last);
+        }
+        swap(array,begin,start);
+        return begin;
+    }
+    
+    
+
+//挖坑法
+    public static int partition1(int[] array,int start,int end) {
+        int tmp=array[start];
+        while(start<end) {
+            while(start<end && array[end]>=tmp) {
+                end--;
+            }
+            array[start]=array[end];
+            while (start<end && array[start]<=tmp) {
+                start++;
+            }
+            array[end]=array[start];
+        }
+        array[start]=tmp;
+        return start;
+    }
+
+
+
+
+//三数取中
+    public static void medianOfThree (int[] array,int left,int right) {
+        int mid=(left+right)/2;
+        if(array[mid]>array[left]) {
+            int tmp=array[mid];
+            array[mid]=array[left];
+            array[left]=tmp;
+        }
+        if(array[left]>array[right]) {
+            int tmp=array[left];
+            array[left]=array[right];
+            array[right]=tmp;
+
+        }
+        if(array[mid]>array[right]) {
+            int tmp=array[mid];
+            array[mid]=array[right];
+            array[right]=tmp;
+        }
+        //array[mid] <= array[start] <= array[right]
+    }
+
+
+
+
+
+    //随机选择法
+    public static void pivotRandow(int[] array,int left,int right) {
+
+        Random random=new Random();
+        int rand=random.nextInt(right-left)+left+1;
+        int tmp=array[left];
+        array[left]=array[rand];
+        array[rand]=tmp;
+    }
+
+
+
+
+//直接插入排序
+    public static void insertSort(int[] array,int left,int right) {
+        //参数判断
+        if(array == null) return;
+        for (int i = left+1; i <= right; i++) {
+            int tmp = array[i];
+            int j = i-1;
+            for (; j >= left ; j--) {
+                if(array[j] > tmp) {
+                    array[j+1] = array[j];
+                }else {
+                    break;
+                }
+            }
+            array[j+1] = tmp;
+        }
+    }
+
+    public static void quick(int[] array,int left,int right) {
+        if(left>=right) {
+            return;
+        }
+        int pivot=partition1(array,left,right);
+        
+        
+
+        //3、递归执行到一个区间之后  进行直接插入排序
+        if((right - left + 1) <= 100) {
+            insertSort(array,left,right);
+            return;//
+        }
+        
+        
+
+        //pivotRandow(array,left,right);
+        //三数取中法
+        medianOfThree(array,left,right);
+        //递归
+        quick(array,left,pivot-1);
+        quick(array,pivot+1,right);
+    }
+    public static void quickSo(int[] array) {
+        quick(array,0,array.length-1);
+    }
+
+    public static void main(String[] args) {
+        int[] array = {6,2,1,5,9};
+        System.out.println(Arrays.toString(array));
+        quickSo(array);
+        System.out.println(Arrays.toString(array));
+    }
+}
